@@ -1,0 +1,176 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "Internet-dns",
+        "address": "tls://dns.adguard-dns.com",
+        "address_resolver": "direct-dns",
+        "address_strategy": "ipv4_only",
+        "strategy": "ipv4_only",
+        "detour": "Internet"
+      },
+      {
+        "tag": "Best Latency-dns",
+        "address": "1.1.1.1",
+        "address_strategy": "ipv4_only",
+        "strategy": "ipv4_only",
+        "detour": "Best Latency"
+      },
+      {
+        "tag": "direct-dns",
+        "address": "local",
+        "address_strategy": "ipv4_only",
+        "strategy": "ipv4_only",
+        "detour": "direct"
+      }
+    ],
+    "rules": [
+      {
+        "domain_suffix": [
+          ".arpa.",
+          ".arpa"
+        ],
+        "action": "reject",
+        "method": "default"
+      },
+      {
+        "domain_suffix": "zaintest.vuclip.com",
+        "server": "direct-dns"
+      },
+      {
+        "outbound": "Internet",
+        "server": "Internet-dns"
+      },
+      {
+        "outbound": "direct",
+        "server": "direct-dns"
+      }
+    ],
+    "reverse_mapping": true,
+    "strategy": "ipv4_only",
+    "independent_cache": true
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "mtu": 1400,
+      "address": "172.19.0.1/30",
+      "auto_route": true,
+      "strict_route": true,
+      "udp_timeout": "5m0s",
+      "stack": "gvisor",
+      "endpoint_independent_nat": true
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "selector",
+      "tag": "Internet",
+      "outbounds": [
+        "Best Latency",
+        "Atlantic",
+        "Aws-Decta"
+      ]
+    },
+    {
+      "type": "urltest",
+      "tag": "Best Latency",
+      "outbounds": [
+        "Atlantic",
+        "Aws-Decta"
+      ],
+      "url": "https://clients3.google.com/generate_204",
+      "interval": "2m30s"
+    },
+    {
+      "type": "trojan",
+      "tag": "Atlantic",
+      "domain_strategy": "ipv4_only",
+      "server": "zaintest.vuclip.com",
+      "server_port": 443,
+      "password": "PeHDvrfnwUMoU9a8oID91Q",
+      "tls": {
+        "enabled": true,
+        "server_name": "zaintest.vuclip.com.atlantic.mustaqimraya.my.id",
+        "insecure": true
+      },
+      "multiplex": {
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/trojan",
+        "headers": {
+          "Host": "zaintest.vuclip.com.atlantic.mustaqimraya.my.id"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    },
+    {
+      "type": "trojan",
+      "tag": "Aws-Decta",
+      "domain_strategy": "ipv4_only",
+      "server": "zaintest.vuclip.com",
+      "server_port": 443,
+      "password": "1mo4Lu3rVKhCRoT0oGU0wg",
+      "tls": {
+        "enabled": true,
+        "server_name": "zaintest.vuclip.com.mbakyu.mustaqimraya.my.id",
+        "insecure": true
+      },
+      "multiplex": {
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/trojan",
+        "headers": {
+          "Host": "zaintest.vuclip.com.mbakyu.mustaqimraya.my.id"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    },
+    {
+      "type": "direct",
+      "tag": "direct",
+      "domain_strategy": "ipv4_only",
+      "fallback_delay": "300ms"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "port": 53,
+        "action": "reject",
+        "method": "default"
+      },
+      {
+        "network": "udp",
+        "port": 443,
+        "action": "reject",
+        "method": "default"
+      },
+      {
+        "domain_suffix": "googlesyndication.com",
+        "outbound": "Internet"
+      }
+    ],
+    "final": "Internet",
+    "auto_detect_interface": true,
+    "override_android_vpn": true
+  }
+}
