@@ -73,6 +73,7 @@
       "tag": "Internet",
       "outbounds": [
         "Best Latency",
+		"Kmsp",
         "Atlantic",
         "Aws-Decta"
       ]
@@ -81,11 +82,37 @@
       "type": "urltest",
       "tag": "Best Latency",
       "outbounds": [
-        "Atlantic",
+        "Kmsp",
+		"Atlantic",
         "Aws-Decta"
       ],
       "url": "https://clients3.google.com/generate_204",
       "interval": "2m30s"
+    },
+    {
+      "type": "trojan",
+      "tag": "Kmsp",
+      "domain_strategy": "ipv4_only",
+      "server": "zaintest.vuclip.com",
+      "server_port": 443,
+      "password": "f6c8a424-0def-4039-8237-75ea9d018fc7",
+      "tls": {
+        "enabled": true,
+        "server_name": "zaintest.vuclip.com.id-trojan-vvip-17.topvpn.my.id",
+        "insecure": true
+      },
+      "multiplex": {
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/websocket-trojan",
+        "headers": {
+          "Host": "zaintest.vuclip.com.id-trojan-vvip-17.topvpn.my.id"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
     },
     {
       "type": "trojan",
