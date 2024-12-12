@@ -73,31 +73,56 @@
       "tag": "Internet",
       "outbounds": [
         "Best Latency",
-        "Atlantic",
-        "ADAMAWS",
+        "Kms-Decta",
+        "Atl-Decta",
         "Aws-Decta",
-        "ADAMMELBI"
+        "ADAMAWS"
       ]
     },
     {
       "type": "urltest",
       "tag": "Best Latency",
       "outbounds": [
-        "Atlantic",
-        "ADAMAWS",
+        "Kms-Decta",
+        "Atl-Decta",
         "Aws-Decta",
-        "ADAMMELBI"
+        "ADAMAWS"
       ],
       "url": "https://clients3.google.com/generate_204",
       "interval": "2m30s"
     },
     {
       "type": "trojan",
-      "tag": "Atlantic",
+      "tag": "Kms-Decta",
       "domain_strategy": "ipv4_only",
       "server": "104.20.75.141",
       "server_port": 443,
-      "password": "PeHDvrfnwUMoU9a8oID91Q",
+      "password": "f6c8a424-0def-4039-8237-75ea9d018fc7",
+      "tls": {
+        "enabled": true,
+        "server_name": "id-trojan-vvip-17.topvpn.my.id",
+        "insecure": true
+      },
+      "multiplex": {
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/websocket-trojan",
+        "headers": {
+          "Host": "id-trojan-vvip-17.topvpn.my.id"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    },
+    {
+      "type": "trojan",
+      "tag": "Atl-Decta",
+      "domain_strategy": "ipv4_only",
+      "server": "104.20.75.141",
+      "server_port": 443,
+      "password": "z4nv3P67tVHe1Y36o0FX5g",
       "tls": {
         "enabled": true,
         "server_name": "atlantic.mustaqimraya.my.id",
@@ -115,19 +140,17 @@
         },
         "early_data_header_name": "Sec-WebSocket-Protocol"
       }
-    },
+    },    
     {
-      "type": "vmess",
-      "tag": "ADAMMELBI",
+      "type": "trojan",
+      "tag": "Aws-Decta",
       "domain_strategy": "ipv4_only",
       "server": "104.20.75.141",
       "server_port": 443,
-      "uuid": "8eab8d56-6581-4ddf-b0b0-4c762d3a8992",
-      "security": "auto",
-      "authenticated_length": true,
+      "password": "1mo4Lu3rVKhCRoT0oGU0wg",
       "tls": {
         "enabled": true,
-        "server_name": "sg17-melbi.adammau2.my.id",
+        "server_name": "mbakyu.mustaqimraya.my.id",
         "insecure": true
       },
       "multiplex": {
@@ -136,9 +159,9 @@
       },
       "transport": {
         "type": "ws",
-        "path": "/vmess",
+        "path": "/trojan",
         "headers": {
-          "Host": "sg17-melbi.adammau2.my.id"
+          "Host": "mbakyu.mustaqimraya.my.id"
         },
         "early_data_header_name": "Sec-WebSocket-Protocol"
       }
@@ -168,32 +191,7 @@
         "early_data_header_name": "Sec-WebSocket-Protocol"
       }
     },
-    
-    {
-      "type": "trojan",
-      "tag": "Aws-Decta",
-      "domain_strategy": "ipv4_only",
-      "server": "104.20.75.141",
-      "server_port": 443,
-      "password": "1mo4Lu3rVKhCRoT0oGU0wg",
-      "tls": {
-        "enabled": true,
-        "server_name": "mbakyu.mustaqimraya.my.id",
-        "insecure": true
-      },
-      "multiplex": {
-        "protocol": "smux",
-        "max_streams": 32
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/trojan",
-        "headers": {
-          "Host": "mbakyu.mustaqimraya.my.id"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol"
-      }
-    },
+	
     {
       "type": "direct",
       "tag": "direct",
