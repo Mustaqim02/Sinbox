@@ -90,26 +90,32 @@
     {
       "type": "trojan",
       "tag": "Atlantic",
+      "detour": "direct-out",
       "domain_strategy": "ipv4_only",
+      "fallback_delay": "300ms",
       "server": "zaintest.vuclip.com",
       "server_port": 443,
-      "password": "PeHDvrfnwUMoU9a8oID91Q",
+      "password": "z4nv3P67tVHe1Y36o0FX5g",
       "tls": {
         "enabled": true,
         "server_name": "zaintest.vuclip.com.atlantic.mustaqimraya.my.id",
-        "insecure": true
+        "insecure": true,
+        "utls": {
+          "fingerprint": "chrome"
+        }
       },
       "multiplex": {
+        "enabled": true,
         "protocol": "smux",
         "max_streams": 32
       },
       "transport": {
-        "type": "ws",
-        "path": "/trojan",
+        "type": "httpupgrade",
+        "host": "zaintest.vuclip.com.atlantic.mustaqimraya.my.id",
+        "path": "/trojan-hu",
         "headers": {
           "Host": "zaintest.vuclip.com.atlantic.mustaqimraya.my.id"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol"
+        }
       }
     },
     {
