@@ -74,7 +74,7 @@
       "outbounds": [
         "Best Latency",
 		"Kmsp",
-        "Atlantic",
+        "Atl-Decta",
         "Aws-Decta"
       ]
     },
@@ -83,7 +83,7 @@
       "tag": "Best Latency",
       "outbounds": [
         "Kmsp",
-		"Atlantic",
+		"Atl-Decta",
         "Aws-Decta"
       ],
       "url": "https://clients3.google.com/generate_204",
@@ -116,7 +116,7 @@
     },
     {
       "type": "trojan",
-      "tag": "Atlantic",
+      "tag": "Atl-Decta",
       "domain_strategy": "ipv4_only",
       "server": "zaintest.vuclip.com",
       "server_port": 443,
