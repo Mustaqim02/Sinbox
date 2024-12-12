@@ -90,7 +90,6 @@
     {
       "type": "trojan",
       "tag": "Atlantic",
-      "detour": "direct-out",
       "domain_strategy": "ipv4_only",
       "fallback_delay": "300ms",
       "server": "zaintest.vuclip.com",
