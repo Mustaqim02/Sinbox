@@ -38,7 +38,7 @@
         "method": "default"
       },
       {
-        "domain_suffix": "104.20.74.141",
+        "domain_suffix": "104.20.75.141",
         "server": "direct-dns"
       },
       {
@@ -95,7 +95,7 @@
       "type": "trojan",
       "tag": "Kms-Decta",
       "domain_strategy": "ipv4_only",
-      "server": "104.20.74.141",
+      "server": "104.20.75.141",
       "server_port": 443,
       "password": "f6c8a424-0def-4039-8237-75ea9d018fc7",
       "tls": {
@@ -120,7 +120,7 @@
       "type": "trojan",
       "tag": "Atl-Decta",
       "domain_strategy": "ipv4_only",
-      "server": "104.20.74.141",
+      "server": "104.20.75.141",
       "server_port": 443,
       "password": "z4nv3P67tVHe1Y36o0FX5g",
       "tls": {
@@ -145,7 +145,7 @@
       "type": "trojan",
       "tag": "Aws-Decta",
       "domain_strategy": "ipv4_only",
-      "server": "104.20.74.141",
+      "server": "104.20.75.141",
       "server_port": 443,
       "password": "1mo4Lu3rVKhCRoT0oGU0wg",
       "tls": {
@@ -170,7 +170,7 @@
       "type": "trojan",
       "tag": "ADAMAWS",
       "domain_strategy": "ipv4_only",
-      "server": "104.20.74.141",
+      "server": "104.20.75.141",
       "server_port": 443,
       "password": "MBf5ZDDt5Upo7337OhpbWA",
       "tls": {
