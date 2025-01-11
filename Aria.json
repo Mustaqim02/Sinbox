@@ -7,7 +7,7 @@
     "servers": [
       {
         "tag": "Internet-dns",
-        "address": "1.1.1.1",
+        "address": "tls://dns.adguard-dns.com",
         "address_resolver": "direct-dns",
         "address_strategy": "ipv4_only",
         "strategy": "ipv4_only",
