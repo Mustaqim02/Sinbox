@@ -74,9 +74,9 @@
       "outbounds": [
         "Best Latency",
         "Kms-Decta",
-        "Atl-Decta",
         "Aws-Decta",
-        "ADAMAWS"
+        "ADAMAWS",
+        "ADAMMLB"
       ]
     },
     {
@@ -84,9 +84,9 @@
       "tag": "Best Latency",
       "outbounds": [
         "Kms-Decta",
-        "Atl-Decta",
         "Aws-Decta",
-        "ADAMAWS"
+        "ADAMAWS",
+        "ADAMMLB"
       ],
       "url": "https://clients3.google.com/generate_204",
       "interval": "2m30s"
@@ -117,30 +117,38 @@
       }
     },
     {
-      "type": "trojan",
-      "tag": "Atl-Decta",
-      "domain_strategy": "ipv4_only",
+      "tag": "ADAMMLB",
+      "type": "vmess",
       "server": "104.20.75.141",
       "server_port": 443,
-      "password": "z4nv3P67tVHe1Y36o0FX5g",
+      "uuid": "8eab8d56-6581-4ddf-b0b0-4c762d3a8992",
+      "security": "auto",
+      "alter_id": 0,
+      "global_padding": false,
+      "authenticated_length": true,
       "tls": {
         "enabled": true,
-        "server_name": "atlantic.mustaqimraya.my.id",
-        "insecure": true
+        "server_name": "sg17-melbi.bumn.us.kg",
+        "insecure": true,
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
       },
-      "multiplex": {
-        "protocol": "smux",
-        "max_streams": 32
-      },
+      "packet_encoding": "",
       "transport": {
         "type": "ws",
-        "path": "/trojan",
+        "path": "/vmess",
         "headers": {
-          "Host": "atlantic.mustaqimraya.my.id"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol"
+          "Host": "sg17-melbi.bumn.us.kg"
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
       }
-    },    
+}
     {
       "type": "trojan",
       "tag": "Aws-Decta",
