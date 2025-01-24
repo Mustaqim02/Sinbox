@@ -117,14 +117,12 @@
       }
     },
     {
-      "tag": "ADAMMLB",
       "type": "vmess",
+      "tag": "ADAMMLB",
       "server": "104.20.75.141",
       "server_port": 443,
       "uuid": "8eab8d56-6581-4ddf-b0b0-4c762d3a8992",
       "security": "auto",
-      "alter_id": 0,
-      "global_padding": false,
       "authenticated_length": true,
       "tls": {
         "enabled": true,
@@ -135,20 +133,18 @@
           "fingerprint": "chrome"
         }
       },
-      "packet_encoding": "",
+      "multiplex": {
+        "protocol": "smux",
+        "max_streams": 32
+      },
       "transport": {
         "type": "ws",
         "path": "/vmess",
         "headers": {
           "Host": "sg17-melbi.bumn.us.kg"
         }
-      },
-      "multiplex": {
-        "enabled": false,
-        "protocol": "smux",
-        "max_streams": 32
       }
-}
+    },
     {
       "type": "trojan",
       "tag": "Aws-Decta",
@@ -199,7 +195,6 @@
         "early_data_header_name": "Sec-WebSocket-Protocol"
       }
     },
-	
     {
       "type": "direct",
       "tag": "direct",
