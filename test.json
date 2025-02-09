@@ -35,14 +35,6 @@
       {
         "domain_suffix": "104.20.75.141",
         "server": "direct-dns"
-      },
-      {
-        "outbound": "Internet",
-        "server": "Internet-dns"
-      },
-      {
-        "outbound": "direct",
-        "server": "direct-dns"
       }
     ],
     "reverse_mapping": true,
