@@ -1,0 +1,109 @@
+### Config MiHomo | Last edit: Mon Nov 25 10:33:47 WIB 2024
+mixed-port: 9595
+redir-port: 9797
+tproxy-port: 9898
+allow-lan: true
+bind-address: '*'
+# always / strict / off
+find-process-mode: always
+mode: rule
+# debug / info / warning / error / silent
+log-level: warning
+ipv6: false #
+keep-alive-interval: 30
+disable-keep-alive: true
+tcp-concurrent: true
+inbound-tfo: true
+unified-delay: true
+global-ua: 'Mozilla/5.0 (Android 13; Mobile; rv:130.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36'
+etag-support : true
+# chrome / firefox / safari / ios / random / none
+global-client-fingerprint: chrome
+external-controller: 0.0.0.0:9090
+external-ui: /data/adb/box/dashboard
+external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
+###
+profile: { store-fake-ip: true, store-selected: true, store-etag: true }
+###
+anchor:
+  - gen204: &gen204 'http://www.gstatic.com/generate_204'
+  - t: &t {url: *gen204, interval: 3600, tolerance: 30, lazy: true, timeout: 5, success-code: 204, expected-status: 204}
+  - lb: &lb {type: load-balance, strategy: consistent-hashing, url: *gen204, interval: 3600, tolerance: 30, url-test: *t}
+  - fb: &fb {type: fallback, <<: *t}
+  - ut: &ut {type: url-test, <<: *t}
+  - pp: &pp {health-check: {enable: true, <<: *t}}
+  - dns_main: &dns_main [ 'tls://dns.google:853#GLOBAL', 'https://dns.google:443/dns-query#GLOBAL&ecs=192.168.0.1/16&ecs-override=true' ]
+  - dns_xl: &dns_xl [ 'tcp://112.215.198.254:53', 'tcp://[2400:9800:b::253]:53' ]
+  - dns_tsel: &dns_tsel ['192.168.130.28', '192.168.170.28', '192.168.178.28']
+###
+dns:
+  enable: true
+  cache-algorithm: arc
+  ipv6: false #
+  prefer-h3: true
+  use-hosts: true
+  use-system-hosts: false
+  listen: 0.0.0.0:1053
+  nameserver: *dns_main
+  default-nameserver:
+    - 'tcp://8.8.8.8:53#GLOBAL'
+    - 'tcp://8.8.4.4:53#GLOBAL'
+  proxy-server-nameserver: *dns_xl
+  direct-nameserver: *dns_main
+  direct-nameserver-follow-policy: false
+  ## redir-host / fake-ip
+  enhanced-mode: redir-host
+  #fake-ip-range: 198.18.0.1/16
+  #fake-ip-filter:
+    #- 'dns.msftnsci.com'
+    #- 'www.msftnsci.com'
+    #- 'www.msftconnecttest.com'
+    #- 'time.android.com'
+    #- 'stun.l.google.com'
+    #- 'stun.cloudflare.com'
+    #- 'global.stun.twilio.com'
+    #- 'stun.voip.blackberry.com'
+  fallback: []
+  fallback-filter: {}
+###
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: false
+  sniff:
+    QUIC:
+      ports: [443, 8443]
+    TLS:
+      ports: [443, 8443]
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+  sniffing:
+    - quic
+    - tls
+    - http
+###
+proxy-providers:
+  ⚡️: { <<: *pp, type: file, path: /data/adb/box/providers/cdn-vidio.yaml, override: {additional-prefix: "⚡️ "} }
+  ☁️🇮🇩: { <<: *pp, type: http, url: 'https://nautica.foolvpn.me/api/v1/sub/?cc=ID&format=raw&limit=3&tls=true&vpn=trojan&port=443&domain=quiz.int.vidio.com', path: ./.cache/subs-cdn-vidio.txt, override: {additional-prefix: "☁️ ", udp: false} }
+###
+proxies:
+  - {name: '🚧 BLOCKING', type: reject}
+  - {name: '🎯 DIRECTLY', type: direct}
+###
+proxy-groups:
+  - {name: '🎁 MAIN', type: select, include-all-providers: true, exclude-filter: '☁️'}
+  - {name: '☁️ BACKUP', type: select, include-all-providers: true, filter: '☁️'}
+  - {name: 'GLOBAL', type: select, proxies: ['🚧 BLOCKING','🎯 DIRECTLY', '🎁 MAIN','☁️ BACKUP'], default: '🎁 MAIN'}
+  - {name: '🉐 ADS', type: select, proxies: ['🚧 BLOCKING', 'GLOBAL'], default: '🚧 BLOCKING'}
+  - {name: '🦔 QUIC', type: select, proxies: ['🚧 BLOCKING', 'GLOBAL'], default: '🚧 BLOCKING'}
+###
+rule-providers:
+  ads: {type: http, url: 'https://raw.githubusercontent.com/tonggaret/dlc-geosite/subscribe/category-ads-all.mrs/category-ads-all.mrs', behavior: domain, path: ./rules/category-ads-all.mrs, interval: 86400, format: mrs}
+###
+rules:
+  - RULE-SET,ads,🉐 ADS
+  - AND,((NETWORK,udp),(DST-PORT,443)),🦔 QUIC
+  - NETWORK,udp,🎁 MAIN
+  - MATCH,GLOBAL
