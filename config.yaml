@@ -1,4 +1,3 @@
-### Config MiHomo | Last edit: Mon Nov 25 10:33:47 WIB 2024
 mixed-port: 9595
 redir-port: 9797
 tproxy-port: 9898
@@ -9,7 +8,7 @@ find-process-mode: always
 mode: rule
 # debug / info / warning / error / silent
 log-level: warning
-ipv6: false #
+ipv6: false 
 keep-alive-interval: 30
 disable-keep-alive: true
 tcp-concurrent: true
@@ -18,7 +17,7 @@ unified-delay: true
 global-ua: 'Mozilla/5.0 (Android 13; Mobile; rv:130.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36'
 etag-support : true
 # chrome / firefox / safari / ios / random / none
-global-client-fingerprint: chrome
+global-client-fingerprint: ios
 external-controller: 0.0.0.0:9090
 external-ui: /data/adb/box/dashboard
 external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
@@ -32,7 +31,8 @@ anchor:
   - fb: &fb {type: fallback, <<: *t}
   - ut: &ut {type: url-test, <<: *t}
   - pp: &pp {health-check: {enable: true, <<: *t}}
-  - dns_main: &dns_main [ 'tls://dns.google:853#GLOBAL', 'https://dns.google:443/dns-query#GLOBAL&ecs=192.168.0.1/16&ecs-override=true' ]
+  - rp: &rp {type: file, behavior: domain, interval: 86400}
+  - dns_main: &dns_main [ 'tls://dns.google:853#🦔DECTA', 'https://dns.google:443/dns-query#🦔DECTA&ecs=192.168.0.1/16&ecs-override=true' ]
   - dns_xl: &dns_xl [ 'tcp://112.215.198.254:53', 'tcp://[2400:9800:b::253]:53' ]
   - dns_tsel: &dns_tsel ['192.168.130.28', '192.168.170.28', '192.168.178.28']
 ###
@@ -46,23 +46,13 @@ dns:
   listen: 0.0.0.0:1053
   nameserver: *dns_main
   default-nameserver:
-    - 'tcp://8.8.8.8:53#GLOBAL'
-    - 'tcp://8.8.4.4:53#GLOBAL'
-  proxy-server-nameserver: *dns_xl
+    - 'tcp://8.8.8.8:53#🦔DECTA'
+    - 'tcp://8.8.4.4:53#🦔DECTA'
+  proxy-server-nameserver: *dns_tsel
   direct-nameserver: *dns_main
   direct-nameserver-follow-policy: false
   ## redir-host / fake-ip
   enhanced-mode: redir-host
-  #fake-ip-range: 198.18.0.1/16
-  #fake-ip-filter:
-    #- 'dns.msftnsci.com'
-    #- 'www.msftnsci.com'
-    #- 'www.msftconnecttest.com'
-    #- 'time.android.com'
-    #- 'stun.l.google.com'
-    #- 'stun.cloudflare.com'
-    #- 'global.stun.twilio.com'
-    #- 'stun.voip.blackberry.com'
   fallback: []
   fallback-filter: {}
 ###
@@ -85,25 +75,43 @@ sniffer:
     - http
 ###
 proxy-providers:
-  ⚡️: { <<: *pp, type: file, path: /data/adb/box/providers/cdn-vidio.yaml, override: {additional-prefix: "⚡️ "} }
-  ☁️🇮🇩: { <<: *pp, type: http, url: 'https://nautica.foolvpn.me/api/v1/sub/?cc=ID&format=raw&limit=3&tls=true&vpn=trojan&port=443&domain=quiz.int.vidio.com', path: ./.cache/subs-cdn-vidio.txt, override: {additional-prefix: "☁️ ", udp: false} }
+  ⚡️: { <<: *pp, type: file, path: ./providers/cdn-ilped.yaml, override: {additional-prefix: "⚡️ "} }
+  ☁️: { <<: *pp, type: http, url: 'https://prod-test.jdevcloud.com/api/vless?cc=id&cdn=true&tls=true&bug=104.20.75.141&limit=3&format=raw&domain=jeelsboobz.biz.id', path: ./providers/nautica.yaml, override: {additional-prefix: "☁️ "} }
 ###
 proxies:
   - {name: '🚧 BLOCKING', type: reject}
   - {name: '🎯 DIRECTLY', type: direct}
 ###
 proxy-groups:
-  - {name: '🎁 MAIN', type: select, include-all-providers: true, exclude-filter: '☁️'}
-  - {name: '☁️ BACKUP', type: select, include-all-providers: true, filter: '☁️'}
-  - {name: 'GLOBAL', type: select, proxies: ['🚧 BLOCKING','🎯 DIRECTLY', '🎁 MAIN','☁️ BACKUP'], default: '🎁 MAIN'}
-  - {name: '🉐 ADS', type: select, proxies: ['🚧 BLOCKING', 'GLOBAL'], default: '🚧 BLOCKING'}
-  - {name: '🦔 QUIC', type: select, proxies: ['🚧 BLOCKING', 'GLOBAL'], default: '🚧 BLOCKING'}
-###
+  - {name: '🎁 MAIN', type: select, proxies: ['MAIN-BALANCE','MAIN-TEST'], include-all-providers: true, exclude-filter: '☁️'}
+  - {name: 'MAIN-BALANCE', <<: *lb, include-all-providers: true, exclude-filter: '☁️'}
+  - {name: 'MAIN-TEST', <<: *ut, include-all-providers: true, exclude-filter: '☁️'}
+  - {name: '☁️ BACKUP', type: select, proxies: ['BACKUP-BALANCE'], disable-udp: true, include-all-providers: true, filter: '☁️'}
+  - {name: 'BACKUP-BALANCE', <<: *lb, disable-udp: true, include-all-providers: true, filter: '☁️'}
+  - {name: '🦔DECTA', type: select, proxies: ['🚧 BLOCKING','🎯 DIRECTLY', '🎁 MAIN','☁️ BACKUP'], default: '🎁 MAIN'}
+  - {name: '🉐 ADS', type: select, proxies: ['🚧 BLOCKING', '🦔DECTA'], default: '🚧 BLOCKING'}
+  ###
 rule-providers:
-  ads: {type: http, url: 'https://raw.githubusercontent.com/tonggaret/dlc-geosite/subscribe/category-ads-all.mrs/category-ads-all.mrs', behavior: domain, path: ./rules/category-ads-all.mrs, interval: 86400, format: mrs}
+  AWAvenue-Ads: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/refs/heads/main/Filters/AWAvenue-Ads-Rule-Clash.yaml', path: ./rules/AWAvenue-Ads-Rule-Clash.yaml, format: yaml}
+  Category-Ads-All: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/tonggaret/dlc-geosite/subscribe/category-ads-all.mrs/category-ads-all.mrs', path: ./rules/category-ads-all.mrs, format: mrs}
+  DandelionSprout-Anti-Malware: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/DandelionSprout/adfilt/refs/heads/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareDomains.txt', path: ./rules/dandelionsprout-anti-malware.txt, format: text}
+  Geosite-YouTube: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geosite/youtube.mrs', behavior: domain, interval: 86400, path: ./rules/geosite-youtube.mrs, format: mrs}
+  Geosite-WhatsApp: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/whatsapp.mrs', behavior: domain, interval: 86400, path: ./rules/geosite-whatsapp.mrs, format: mrs}
+  HaGeZi-Badware-Hoster: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/hoster-onlydomains.txt', path: ./rules/hagezi.badware-hoster.txt, format: text}
+  HaGeZi-Xiaomi-Tracker: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/domains/native.xiaomi.txt', path: ./rules/hagezi.xiaomi.txt, format: text}
+  UrlHaus-Malware: {<<: *rp, type: http, url: 'https://raw.githubusercontent.com/curbengh/malware-filter/refs/heads/gh-pages/urlhaus-filter-domains-online.txt', path: ./rules/urlhaus-filter-domains-online.txt, format: text}
+  Personal-Block: {<<: *rp, path: ./rules/personal.yaml}
+  Should-be-Main: {<<: *rp, behavior: classical, path: ./rules/should-be-main.yaml}
 ###
 rules:
-  - RULE-SET,ads,🉐 ADS
-  - AND,((NETWORK,udp),(DST-PORT,443)),🦔 QUIC
-  - NETWORK,udp,🎁 MAIN
-  - MATCH,GLOBAL
+  - RULE-SET,Personal-Block,REJECT,no-resolve
+  - RULE-SET,HaGeZi-Badware-Hoster,REJECT,no-resolve
+  - RULE-SET,HaGeZi-Xiaomi-Tracker,REJECT,no-resolve
+  - RULE-SET,UrlHaus-Malware,REJECT,no-resolve
+  - RULE-SET,DandelionSprout-Anti-Malware,REJECT,no-resolve
+  - AND,((NETWORK,UDP),(AND,(DST-PORT,443),(RULE-SET,Geosite-YouTube))),REJECT
+  - RULE-SET,Category-Ads-All,🉐 ADS
+  - RULE-SET,AWAvenue-Ads,🉐 ADS
+  - RULE-SET,Geosite-WhatsApp,🎁 MAIN
+  - RULE-SET,Should-be-Main,🎁 MAIN
+  - MATCH,🦔DECTA
